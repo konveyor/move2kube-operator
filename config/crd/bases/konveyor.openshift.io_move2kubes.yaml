@@ -2,9 +2,9 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: move2kubes.charts.io
+  name: move2kubes.konveyor.openshift.io
 spec:
-  group: charts.io
+  group: konveyor.openshift.io
   names:
     kind: Move2Kube
     listKind: Move2KubeList

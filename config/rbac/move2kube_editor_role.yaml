@@ -5,7 +5,7 @@ metadata:
   name: move2kube-editor-role
 rules:
 - apiGroups:
-  - charts.io
+  - konveyor.openshift.io
   resources:
   - move2kubes
   verbs:
@@ -17,7 +17,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - charts.io
+  - konveyor.openshift.io
   resources:
   - move2kubes/status
   verbs:
