@@ -1,4 +1,4 @@
-apiVersion: charts.io/v1alpha1
+apiVersion: konveyor.openshift.io/v1alpha1
 kind: Move2Kube
 metadata:
   name: move2kube-sample

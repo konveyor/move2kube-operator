@@ -32,7 +32,7 @@ rules:
 ## Rules for charts.io/v1alpha1, Kind: Move2Kube
 ##
 - apiGroups:
-  - charts.io
+  - konveyor.openshift.io
   resources:
   - move2kubes
   - move2kubes/status
