@@ -1,0 +1,11 @@
+apiVersion: charts.io/v1alpha1
+kind: Move2Kube
+metadata:
+  name: move2kube-sample
+spec:
+  # Default values copied from <project_dir>/helm-charts/move2kube/values.yaml
+  storageclass: default
+  storagesize: 1Gi
+  version: latest
+  
+  

@@ -1,0 +1,20 @@
+# permissions for end users to view move2kubes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: move2kube-viewer-role
+rules:
+- apiGroups:
+  - charts.io
+  resources:
+  - move2kubes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - charts.io
+  resources:
+  - move2kubes/status
+  verbs:
+  - get
