@@ -1,0 +1,8 @@
+name: move2kube
+description: A generated Helm Chart for move2kube 
+version: 0.1.0
+apiVersion: v2
+keywords:
+  - move2kube
+sources:
+home:

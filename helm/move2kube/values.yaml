@@ -1,0 +1,3 @@
+version: latest
+storageclass: default
+storagesize: 1Gi
