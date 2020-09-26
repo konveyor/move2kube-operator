@@ -1,0 +1,42 @@
+{{ if .Capabilities.APIVersions.Has "security.openshift.io/v1/SecurityContextConstraints" }}
+kind: SecurityContextConstraints
+apiVersion: security.openshift.io/v1
+metadata:
+  name: {{ .Release.Name }}-move2kube-scc
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: '-1'
+runAsUser:
+  type: RunAsAny
+users:
+- system:serviceaccount:{{ .Release.Namespace }}:{{ .Release.Name }}-move2kube
+fsGroup:
+  type: RunAsAny
+priority: 100
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegeEscalation: true
+allowPrivilegedContainer: false
+readOnlyRootFilesystem: false
+requiredDropCapabilities:
+- KILL
+- MKNOD
+- SETUID
+- SETGID
+seLinuxContext:
+  type: MustRunAs
+supplementalGroups:
+  type: RunAsAny
+volumes:
+- configMap
+- downwardAPI
+- emptyDir
+- persistentVolumeClaim
+- projected
+- secret
+allowedCapabilities: []
+defaultAddCapabilities: []
+{{ end }}
