@@ -41,7 +41,7 @@ GIT_TAG    = $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
 GIT_DIRTY  = $(shell test -n "`git status --porcelain`" && echo "dirty" || echo "clean")
 
 # Image URL to use all building/pushing image targets
-IMG ?= quay.io/konveyor/move2kube-operator:latest
+IMG ?= quay.io/konveyor/move2kube-operator
 
 # HELP
 # This will output the help for each task
@@ -65,20 +65,19 @@ uninstall: kustomize
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: kustomize
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}:${VERSION}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
 # Undeploy controller in the configured Kubernetes cluster in ~/.kube/config
 undeploy: kustomize
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
-# Build the docker image
-docker-build:
-	docker build . -t ${IMG}
+cbuild: # Build the docker image
+	docker build . -t ${IMG}:${VERSION}
 
 # Push the docker image
 docker-push:
-	docker push ${IMG}
+	docker push ${IMG}:${VERSION}
 
 PATH  := $(PATH):$(PWD)/bin
 SHELL := env PATH=$(PATH) /bin/sh
@@ -117,7 +116,7 @@ endif
 .PHONY: bundle
 bundle: kustomize
 	operator-sdk generate kustomize manifests -q
-	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
+	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG):${VERSION}
 	$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
 	operator-sdk bundle validate ./bundle
 
