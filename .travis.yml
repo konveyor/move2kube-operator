@@ -1,0 +1,24 @@
+language: go
+
+go:
+  - "1.15"
+
+services:
+  - docker
+
+script:
+  - make 
+
+after_success:
+  - echo "$QUAY_BOT_PASSWORD" | docker login --username "$QUAY_BOT_USERNAME" --password-stdin quay.io
+  - make cbuild
+  - make cpush
+  - docker tag quay.io/konveyor/move2kube-operator:latest quay.io/konveyor/move2kube-operator:$TRAVIS_BRANCH
+  - docker push quay.io/konveyor/move2kube-operator:$TRAVIS_BRANCH
+
+notifications:
+    email:
+      recipients:
+        - ashokponkumar@in.ibm.com
+      on_success: never 
+      on_failure: always
