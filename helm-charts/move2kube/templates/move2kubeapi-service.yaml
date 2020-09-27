@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    io.move2kube.service: {{ .Release.Name }}-move2kubeapi
+    move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
   name: {{ .Release.Name }}-move2kubeapi
 spec:
   ports:
@@ -10,7 +10,7 @@ spec:
       port: 8080
       targetPort: 8080
   selector:
-    io.move2kube.service: {{ .Release.Name }}-move2kubeapi
+    move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
   type: ClusterIP
 status:
   loadBalancer: {}

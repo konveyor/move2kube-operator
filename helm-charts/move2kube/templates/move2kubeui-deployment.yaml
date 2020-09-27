@@ -2,26 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    move2kube.service.expose: "true"
+    move2kube.konveyor.io/expose: "true"
   labels:
-    io.move2kube.service: {{ .Release.Name }}-move2kubeui
+    move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
   name: {{ .Release.Name }}-move2kubeui
 spec:
   replicas: 2
   selector:
     matchLabels:
-      io.move2kube.service: {{ .Release.Name }}-move2kubeui
+      move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
   strategy: {}
   template:
     metadata:
       annotations:
-        move2kube.service.expose: "true"
+        move2kube.konveyor.io/expose: "true"
       labels:
-        io.move2kube.service: {{ .Release.Name }}-move2kubeui
+        move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
       name: {{ .Release.Name }}-move2kubeui
     spec:
       containers:
-        - image: quay.io/konveyor/move2kube-ui:{{ .Values.version  }}'
+        - image: quay.io/konveyor/move2kube-ui:{{ .Values.version  }}
           imagePullPolicy: Always
           name: move2kubeui
           env:
