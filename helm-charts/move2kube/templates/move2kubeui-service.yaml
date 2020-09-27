@@ -4,7 +4,7 @@ metadata:
   annotations:
     move2kube.service.expose: "true"
   labels:
-    io.move2kube.service: {{ .Release.Name }}-move2kubeui
+    move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
   name: {{ .Release.Name }}-move2kubeui
 spec:
   ports:
@@ -12,7 +12,7 @@ spec:
       port: 8080
       targetPort: 8080
   selector:
-    io.move2kube.service: {{ .Release.Name }}-move2kubeui
+    move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
   type: ClusterIP
 status:
   loadBalancer: {}
