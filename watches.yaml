@@ -1,5 +1,5 @@
 # Use the 'create api' subcommand to add watches to this file.
-- group: konveyor.openshift.io
+- group: konveyor.io
   version: v1alpha1
   kind: Move2Kube
   chart: helm-charts/move2kube
