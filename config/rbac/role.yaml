@@ -29,7 +29,7 @@ rules:
   - create
 
 ##
-## Rules for charts.io/v1alpha1, Kind: Move2Kube
+## Rules for konveyor.io/v1alpha1, Kind: Move2Kube
 ##
 - apiGroups:
   - konveyor.io
@@ -47,6 +47,12 @@ rules:
 - verbs:
   - "*"
   apiGroups:
+  - "networking.k8s.io"
+  resources:
+  - "ingresses"
+- verbs:
+  - "*"
+  apiGroups:
   - ""
   resources:
   - "persistentvolumeclaims"
@@ -59,11 +65,5 @@ rules:
   resources:
   - "deployments"
   - "statefulsets"
-- verbs:
-  - "*"
-  apiGroups:
-  - "networking.k8s.io"
-  resources:
-  - "ingresses"
 
 # +kubebuilder:scaffold:rules
