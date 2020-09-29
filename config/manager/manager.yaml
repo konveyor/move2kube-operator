@@ -23,7 +23,7 @@ spec:
         control-plane: controller-manager
     spec:
       containers:
-      - image: quay.io/konveyor/move2kube-operator:latest
+      - image: controller:latest
         args:
         - "--enable-leader-election"
         - "--leader-election-id=move2kube-operator"

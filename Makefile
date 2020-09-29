@@ -1,31 +1,8 @@
-#   Copyright IBM Corporation 2020
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#        http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
+# Current Operator version
+VERSION ?= 0.1.0-alpha
 REGISTRYNS  := quay.io/konveyor
-
-ifdef VERSION
-	BINARY_VERSION = $(VERSION)
-endif
-BINARY_VERSION ?= ${GIT_TAG}
-ifneq ($(BINARY_VERSION),)
-	LDFLAGS += -X github.com/konveyor/${BINNAME}/types/info.version=${BINARY_VERSION}
-	VERSION ?= $(BINARY_VERSION)
-endif
-VERSION ?= latest
-
 # Default bundle image tag
-BUNDLE_IMG ?= controller-bundle:$(VERSION)
+BUNDLE_IMG ?= ${REGISTRYNS}/move2kube-bundle:$(VERSION)
 # Options for 'bundle-build'
 ifneq ($(origin CHANNELS), undefined)
 BUNDLE_CHANNELS := --channels=$(CHANNELS)
@@ -35,19 +12,8 @@ BUNDLE_DEFAULT_CHANNEL := --default-channel=$(DEFAULT_CHANNEL)
 endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
-GIT_COMMIT = $(shell git rev-parse HEAD)
-GIT_SHA    = $(shell git rev-parse --short HEAD)
-GIT_TAG    = $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
-GIT_DIRTY  = $(shell test -n "`git status --porcelain`" && echo "dirty" || echo "clean")
-
 # Image URL to use all building/pushing image targets
-IMG ?= move2kube-operator
-
-# HELP
-# This will output the help for each task
-.PHONY: help
-help: ## This help.
-	@awk 'BEGIN {FS = ":.*?## "} /^[0-9a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+IMG ?= ${REGISTRYNS}/move2kube-operator:latest
 
 all: docker-build
 
@@ -65,20 +31,20 @@ uninstall: kustomize
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: kustomize
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${REGISTRYNS}/${IMG}:${VERSION}
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
 # Undeploy controller in the configured Kubernetes cluster in ~/.kube/config
 undeploy: kustomize
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
-cbuild: # Build the docker image
-	@docker build -t ${REGISTRYNS}/${IMG}:${VERSION} -t ${REGISTRYNS}/${IMG}:latest .
+# Build the docker image
+docker-build:
+	docker build . -t ${IMG}
 
 # Push the docker image
-cpush:
-	@docker push ${REGISTRYNS}/${BINNAME}:latest
-	@docker push ${REGISTRYNS}/${BINNAME}:${VERSION}
+docker-push:
+	docker push ${IMG}
 
 PATH  := $(PATH):$(PWD)/bin
 SHELL := env PATH=$(PATH) /bin/sh
@@ -117,7 +83,7 @@ endif
 .PHONY: bundle
 bundle: kustomize
 	operator-sdk generate kustomize manifests -q
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${REGISTRYNS}/$(IMG):${VERSION}
+	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
 	$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
 	operator-sdk bundle validate ./bundle
 

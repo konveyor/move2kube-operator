@@ -2,7 +2,7 @@ domain: io
 layout: helm.sdk.operatorframework.io/v1
 projectName: move2kube-operator
 resources:
-- group: konveyor.openshift
+- group: konveyor
   kind: Move2Kube
   version: v1alpha1
 version: 3-alpha
