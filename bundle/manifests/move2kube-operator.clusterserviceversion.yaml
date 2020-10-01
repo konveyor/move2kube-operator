@@ -188,6 +188,6 @@ spec:
     name: '"Ashok Pon Kumar'
   maturity: alpha
   provider:
-    name: RedHat
+    name: Red Hat
     url: https://github.com/konveyor/move2kube
   version: 0.1.0-alpha
