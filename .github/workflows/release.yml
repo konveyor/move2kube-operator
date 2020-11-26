@@ -1,0 +1,59 @@
+name: Release
+
+on:  
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+
+  image-build:
+    name: Image Build
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: make docker-build
+    - name: Push image to quay
+      run: |
+        echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
+        VERSION=${GITHUB_REF/refs\/tags\//} make docker-push
+    - name: Success Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_ICON: https://github.com/actions.png?size=48
+        SLACK_MESSAGE: 'Built and Pushed quay.io/konveyor/move2kube-operator:${GITHUB_REF/refs\/tags\//}'
+        SLACK_TITLE: Success
+        SLACK_USERNAME: GitHubActions
+    - name: Failure Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      if: failure()
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_COLOR: '#BD3232'
+        SLACK_ICON: https://github.com/actions.png?size=48
+        SLACK_MESSAGE: 'Failed to build and push image quay.io/konveyor/move2kube-operator:${GITHUB_REF/refs\/tags\//}'
+        SLACK_TITLE: Failed
+        SLACK_USERNAME: GitHubActions
+
+  create-release-draft:
+    name: Create Release Draft
+    runs-on: ubuntu-latest
+    needs: [image-build]
+    steps:
+    - uses: release-drafter/release-drafter@v5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Get Latest Release Info
+      id: latest_release_info
+      uses: jossef/action-latest-release-info@v1.1.0
+    - name: Success Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_ICON: https://github.com/actions.png?size=48
+        SLACK_MESSAGE: 'Release draft for ${{ steps.latest_release_info.outputs.tag_name }} created in ${{ steps.latest_release_info.outputs.html_url }}'
+        SLACK_TITLE: Success
+        SLACK_USERNAME: GitHubActions
