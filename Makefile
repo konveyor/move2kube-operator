@@ -1,5 +1,5 @@
 # Current Operator version
-VERSION ?= 0.1.0-alpha
+VERSION ?= latest
 REGISTRYNS  := quay.io/konveyor
 # Default bundle image tag
 BUNDLE_IMG ?= ${REGISTRYNS}/move2kube-bundle:$(VERSION)
@@ -13,7 +13,7 @@ endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
 # Image URL to use all building/pushing image targets
-IMG ?= ${REGISTRYNS}/move2kube-operator:latest
+IMG ?= ${REGISTRYNS}/move2kube-operator:$(VERSION)
 
 all: docker-build
 
