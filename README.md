@@ -10,4 +10,4 @@ Operator to orchestrate [Move2Kube UI](https://github.com/konveyor/move2kube-ui)
 
 ## Discussion
 
-To discuss with the maintainers, reach out in [slack](https://kubernetes.slack.com/archives/CR85S82A2) in [kubernetes](https://slack.k8s.io/) workspace.
+* For any questions reach out to us on any of the communication channels given on our website https://konveyor.io/move2kube/.
