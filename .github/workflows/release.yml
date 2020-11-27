@@ -14,11 +14,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: make docker-build
+      run: |
+        VERSION=${GITHUB_REF/refs\/tags\//} make docker-build
+        VERSION=${GITHUB_REF/refs\/tags\//} make bundle-build
     - name: Push image to quay
       run: |
         echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
         VERSION=${GITHUB_REF/refs\/tags\//} make docker-push
+        docker push quay.io/move2kube-bundle:${GITHUB_REF/refs\/tags\//}
     - name: Success Slack Notification
       uses: rtCamp/action-slack-notify@v2
       env:
