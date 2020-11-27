@@ -19,7 +19,7 @@ jobs:
       run: |
         echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
         make docker-push
-        docker push quay.io/move2kube-bundle:latest
+        docker push quay.io/konveyor/move2kube-bundle:latest
     - name: Success Slack Notification
       uses: rtCamp/action-slack-notify@v2
       env:
