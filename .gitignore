@@ -24,3 +24,4 @@ _dist
 bin
 .m2k
 coverage.txt
+.cr-release-packages
