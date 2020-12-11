@@ -1,5 +1,5 @@
 version: latest
 storageclass: default
 storagesize: 1Gi
-ingresshost: irlhc.us-south.containers.appdomain.cloud
-#ingresstls: irlhc-tls
+ingresshost: my.domain.com
+#ingresstls: my-tls-secret
