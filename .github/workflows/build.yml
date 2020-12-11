@@ -2,39 +2,38 @@ name: Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
-  image-build:
-    name: Image Build
+  image_build:
+    name: Image build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: |
-        make docker-build
-        make bundle-build
-    - name: Push image to quay
-      run: |
-        echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
-        make docker-push
-        docker push quay.io/konveyor/move2kube-bundle:latest
-    - name: Success Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_ICON: https://github.com/actions.png?size=48
-        SLACK_MESSAGE: 'Built and Pushed quay.io/konveyor/move2kube-operator:latest'
-        SLACK_TITLE: Success
-        SLACK_USERNAME: GitHubActions
-    - name: Failure Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      if: failure()
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_COLOR: '#BD3232'
-        SLACK_ICON: https://github.com/actions.png?size=48
-        SLACK_MESSAGE: 'Failed to build and push image quay.io/konveyor/move2kube-operator:latest'
-        SLACK_TITLE: Failed
-        SLACK_USERNAME: GitHubActions
+      - uses: actions/checkout@v2
+      - name: build
+        run: |
+          make docker-build
+          make bundle-build
+      - name: push images to quay
+        run: |
+          echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
+          make docker-push
+          docker push quay.io/konveyor/move2kube-bundle:latest
+      - name: success slack notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_ICON: https://github.com/actions.png?size=48
+          SLACK_MESSAGE: "Built and pushed quay.io/konveyor/move2kube-operator:latest"
+          SLACK_TITLE: Success
+          SLACK_USERNAME: GitHubActions
+      - name: failure slack notification
+        uses: rtCamp/action-slack-notify@v2
+        if: failure()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: "#BD3232"
+          SLACK_ICON: https://github.com/actions.png?size=48
+          SLACK_MESSAGE: "Failed to build and push image quay.io/konveyor/move2kube-operator:latest"
+          SLACK_TITLE: Failed
+          SLACK_USERNAME: GitHubActions
