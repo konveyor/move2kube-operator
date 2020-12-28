@@ -26,17 +26,17 @@ spec:
               protocol: TCP
           resources: {}
           volumeMounts:
-            - mountPath: /wksps
+            - mountPath: /workspace
               name: {{ .Release.Name }}-data-pvcclaim1
       initContainers:
         - name: initcontainer 
           image: alpine:latest
           command: ["/bin/sh", "-c"]
           args:
-            - chown -R 1000:1000 /wksps; 
+            - chown -R 1000:1000 /workspace; 
           volumeMounts:
           - name: {{ .Release.Name }}-data-pvcclaim1
-            mountPath: /wksps
+            mountPath: /workspace
       restartPolicy: Always
       volumes:
         - name: {{ .Release.Name }}-data-pvcclaim1
