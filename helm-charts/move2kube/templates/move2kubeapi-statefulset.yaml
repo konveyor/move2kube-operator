@@ -18,16 +18,20 @@ spec:
     spec:
       serviceAccountName: {{ .Release.Name }}-move2kube
       containers:
-        - image: quay.io/konveyor/move2kube-api:{{ .Values.version  }}
+        - image: quay.io/konveyor/move2kube-api:{{ .Values.version }}
           imagePullPolicy: Always
           name: move2kubeapi
           ports:
             - containerPort: 8080
               protocol: TCP
+          securityContext:
+            privileged: true
           resources: {}
           volumeMounts:
             - mountPath: /workspace
               name: {{ .Release.Name }}-data-pvcclaim1
+            - mountPath: /var/lib/containers
+              name: container-storage
       initContainers:
         - name: initcontainer 
           image: alpine:latest
@@ -42,3 +46,5 @@ spec:
         - name: {{ .Release.Name }}-data-pvcclaim1
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-data-pvcclaim1
+        - name: container-storage
+          emptyDir: {}
