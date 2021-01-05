@@ -1,6 +1,23 @@
+GIT_TAG    = $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
+GIT_BRANCH = $(shell git branch --show-current)
+
+IMAGE_TAG ?= ${GIT_TAG}
+ifeq ($(IMAGE_TAG),)
+	IMAGE_TAG := ${GIT_BRANCH}
+endif
+ifeq ($(IMAGE_TAG),)
+	IMAGE_TAG := latest
+endif
+ifeq ($(IMAGE_TAG),main)
+	IMAGE_TAG := latest
+endif
+
+RELEASE_NAME ?= move2kube
+
 # Current Operator version
 VERSION ?= latest
 REGISTRYNS  := quay.io/konveyor
+
 # Default bundle image tag
 BUNDLE_IMG ?= ${REGISTRYNS}/move2kube-bundle:$(VERSION)
 # Options for 'bundle-build'
@@ -89,5 +106,15 @@ bundle: kustomize
 
 # Build the bundle image.
 .PHONY: bundle-build
-bundle-build:
+bundle-build: 
 	docker build -f bundle.Dockerfile -t $(BUNDLE_IMG) .
+
+.PHONY: prepare-for-release
+prepare-for-release:
+	mv helm-charts/move2kube/Chart.yaml old
+	cat old | sed -E s/version:\ 0.1.0-unreleased/version:\ ${IMAGE_TAG}/ | sed -E s/appVersion:\ latest/appVersion:\ ${IMAGE_TAG}/ > helm-charts/move2kube/Chart.yaml
+	rm old
+
+.PHONY: helm-install
+helm-install:
+	helm upgrade --install --set image.tag=${IMAGE_TAG} ${RELEASE_NAME} helm-charts/move2kube/

@@ -21,7 +21,7 @@ spec:
       name: {{ .Release.Name }}-move2kubeui
     spec:
       containers:
-        - image: quay.io/konveyor/move2kube-ui:{{ .Values.version  }}
+        - image: quay.io/konveyor/move2kube-ui:{{ .Values.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: Always
           name: move2kubeui
           env:

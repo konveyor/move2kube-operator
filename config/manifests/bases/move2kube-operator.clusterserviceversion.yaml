@@ -2,7 +2,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
   annotations:
-    alm-examples: '[]'
+    alm-examples: "[]"
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.0.1
     operators.operatorframework.io/project_layout: helm.sdk.operatorframework.io/v1
@@ -14,33 +14,33 @@ spec:
   description: Move2Kube accelerates the process of re-platforming to Kubernetes/Openshift.
   displayName: Konveyor Move2Kube Operator
   icon:
-  - base64data: ""
-    mediatype: ""
+    - base64data: ""
+      mediatype: ""
   install:
     spec:
       deployments: null
     strategy: ""
   installModes:
-  - supported: false
-    type: OwnNamespace
-  - supported: false
-    type: SingleNamespace
-  - supported: false
-    type: MultiNamespace
-  - supported: true
-    type: AllNamespaces
+    - supported: false
+      type: OwnNamespace
+    - supported: false
+      type: SingleNamespace
+    - supported: false
+      type: MultiNamespace
+    - supported: true
+      type: AllNamespaces
   keywords:
-  - ibm-research
-  - replatform
-  - kubernetes
-  - openshift
-  - modernization
+    - ibm-research
+    - replatform
+    - kubernetes
+    - openshift
+    - modernization
   links:
-  - name: Move2kube Operator
-    url: https://move2kube-operator.domain
+    - name: Move2kube Operator
+      url: https://move2kube-operator.domain
   maintainers:
-  - email: ashokponkumar@in.ibm.com"
-    name: '"Ashok Pon Kumar'
+    - email: konveyorio@googlegroups.com
+      name: "Move2Kube authors"
   maturity: alpha
   provider:
     name: Konveyor
