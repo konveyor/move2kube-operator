@@ -117,4 +117,4 @@ prepare-for-release:
 
 .PHONY: helm-install
 helm-install:
-	helm upgrade --install --set image.tag=${IMAGE_TAG} ${RELEASE_NAME} helm-charts/move2kube/
+	helm upgrade --install --set image_tag=${IMAGE_TAG} ${RELEASE_NAME} helm-charts/move2kube/
