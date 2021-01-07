@@ -3,4 +3,5 @@ description: A generated Helm Chart for move2kube
 keywords:
 - move2kube
 name: move2kube
-version: 0.1.0
+version: v0.1.0-unreleased
+appVersion: latest
