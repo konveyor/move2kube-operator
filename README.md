@@ -8,6 +8,20 @@
 
 Operator to orchestrate [Move2Kube UI](https://github.com/konveyor/move2kube-ui) and [API](https://github.com/konveyor/move2kube-api).
 
+## Usage
+
+### Helm chart
+
+```
+helm repo add move2kube https://konveyor.io/move2kube
+helm repo update
+helm install --set ingresshost='my.k8s.cluster.domain.com' m2krelease move2kube/move2kube
+```
+Then do `kubectl get ingress` to get find the url and open it in the browser.  
+Example: `https://m2krelease-mynamespace.my.k8s.cluster.domain.com`
+
+For TLS uncomment the line `#ingresstls: my-tls-secret` in `values.yaml` and replace with the name of the TLS secret.
+
 ## Discussion
 
 * For any questions reach out to us on any of the communication channels given on our website https://konveyor.io/move2kube/.
