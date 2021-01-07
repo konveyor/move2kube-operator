@@ -18,7 +18,7 @@ spec:
     spec:
       serviceAccountName: {{ .Release.Name }}-move2kube
       containers:
-        - image: quay.io/konveyor/move2kube-api:{{ .Values.image.tag | default .Chart.AppVersion }}
+        - image: quay.io/konveyor/move2kube-api:{{ .Values.image_tag | default .Chart.AppVersion }}
           imagePullPolicy: Always
           name: move2kubeapi
           ports:
