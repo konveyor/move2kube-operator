@@ -189,5 +189,5 @@ spec:
   maturity: alpha
   provider:
     name: Konveyor
-    url: https://konveyor.io/move2kube/
+    url: https://move2kube.konveyor.io/
   version: 0.1.0-alpha

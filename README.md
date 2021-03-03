@@ -13,7 +13,7 @@ Operator to orchestrate [Move2Kube UI](https://github.com/konveyor/move2kube-ui)
 ### Helm chart
 
 ```
-helm repo add move2kube https://konveyor.io/move2kube
+helm repo add move2kube https://move2kube.konveyor.io
 helm repo update
 helm install --set ingresshost='my.k8s.cluster.domain.com' m2krelease move2kube/move2kube
 ```
@@ -24,4 +24,4 @@ For TLS uncomment the line `#ingresstls: my-tls-secret` in `values.yaml` and rep
 
 ## Discussion
 
-* For any questions reach out to us on any of the communication channels given on our website https://konveyor.io/move2kube/.
+* For any questions reach out to us on any of the communication channels given on our website https://move2kube.konveyor.io/.
