@@ -92,7 +92,7 @@ jobs:
       - run: helm package helm-charts/move2kube
       - run: mkdir temp/
       - run: mv *.tgz temp/
-      - run: curl -L -o oldindex.yaml https://konveyor.io/move2kube/index.yaml
+      - run: curl -L -o oldindex.yaml https://move2kube.konveyor.io/index.yaml
       - run: helm repo index --merge oldindex.yaml --url https://github.com/konveyor/move2kube-operator/releases/download/${{ github.event.inputs.tag }} temp/
       - uses: HarikrishnanBalagopal/upload-release-action@v3
         with:
