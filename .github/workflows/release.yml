@@ -86,7 +86,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.event.inputs.tag }}
           prev_tag: ${{ github.event.inputs.prev_tag }}
-          config: .grenrc.js
+          config: releasenotes-config.js
       - uses: azure/setup-helm@v1
       - run: IMAGE_TAG='${{ github.event.inputs.tag }}' make prepare-for-release
       - run: helm package helm-charts/move2kube
