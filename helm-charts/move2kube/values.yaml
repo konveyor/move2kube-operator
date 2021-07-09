@@ -2,3 +2,4 @@ storageclass: default
 storagesize: 1Gi
 ingresshost: my.domain.com
 #ingresstls: my-tls-secret
+privileged: false

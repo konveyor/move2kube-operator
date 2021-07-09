@@ -6,8 +6,6 @@ metadata:
   annotations:
     helm.sh/hook: pre-install
     helm.sh/hook-weight: '-1'
-runAsUser:
-  type: RunAsAny
 users:
 - system:serviceaccount:{{ .Release.Namespace }}:{{ .Release.Name }}-move2kube
 fsGroup:
@@ -18,8 +16,10 @@ allowHostIPC: false
 allowHostNetwork: false
 allowHostPID: false
 allowHostPorts: false
+{{ if .Values.privileged }}
 allowPrivilegeEscalation: true
 allowPrivilegedContainer: true
+{{ end }}
 readOnlyRootFilesystem: false
 requiredDropCapabilities:
 - KILL

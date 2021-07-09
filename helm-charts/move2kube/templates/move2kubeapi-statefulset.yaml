@@ -24,8 +24,10 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
+          {{ if .Values.privileged }}
           securityContext:
             privileged: true
+          {{ end }}
           resources: {}
           volumeMounts:
             - mountPath: /workspace
@@ -34,10 +36,10 @@ spec:
               name: container-storage
       initContainers:
         - name: initcontainer 
-          image: alpine:latest
+          image: quay.io/konveyor/busybox
           command: ["/bin/sh", "-c"]
           args:
-            - chown -R 1000:1000 /workspace; 
+            - chmod -R a+rwx -R /workspace; 
           volumeMounts:
           - name: {{ .Release.Name }}-data-pvcclaim1
             mountPath: /workspace
