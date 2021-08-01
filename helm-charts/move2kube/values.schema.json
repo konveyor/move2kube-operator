@@ -1,0 +1,67 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "title": "Values",
+    "properties": {
+        "ingresshost": {
+            "type": "string",
+            "description": "domain where the k8s cluster is deployed"
+        },
+        "ingresstls": {
+            "type": "string",
+            "description": "name of the K8s secret containing TLS certificate and private key"
+        },
+        "storageclass": {
+            "type": "string",
+            "description": "storage class to use for the PVCs"
+        },
+        "storagesize": {
+            "type": "string",
+            "description": "amount of storage to allocate in the PVCs"
+        },
+        "privileged": {
+            "type": "boolean",
+            "description": "this is only necessary to enable certain advanced features of move2kube"
+        },
+        "api": {
+            "type": "object",
+            "description": "settings specific to the API server",
+            "properties": {
+                "replicas": {
+                    "type": "integer",
+                    "description": "number of pods to start"
+                }
+            },
+            "required": [
+                "replicas"
+            ]
+        },
+        "ui": {
+            "type": "object",
+            "description": "settings specific to the UI server",
+            "properties": {
+                "replicas": {
+                    "type": "integer",
+                    "description": "number of pods to start"
+                }
+            },
+            "required": [
+                "replicas"
+            ]
+        },
+        "auth": {
+            "type": "string",
+            "description": "a JSON containing all the authentication details"
+        }
+    },
+    "required": [
+        "api",
+        "auth",
+        "ingresshost",
+        "ingresstls",
+        "privileged",
+        "storageclass",
+        "storagesize",
+        "ui"
+    ]
+}

@@ -5,13 +5,11 @@ metadata:
     move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
   name: {{ .Release.Name }}-move2kubeapiheadless
 spec:
+  type: ClusterIP
+  clusterIP: None
   ports:
     - name: "8080"
       port: 8080
       targetPort: 8080
   selector:
     move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
-  clusterIP: None
-  type: ClusterIP
-status:
-  loadBalancer: {}

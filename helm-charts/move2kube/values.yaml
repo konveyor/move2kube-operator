@@ -1,5 +1,10 @@
+ingresshost: my.domain.com
+ingresstls: ""
 storageclass: default
 storagesize: 1Gi
-ingresshost: my.domain.com
-#ingresstls: my-tls-secret
 privileged: false
+api:
+  replicas: 2
+ui:
+  replicas: 1
+auth: ""

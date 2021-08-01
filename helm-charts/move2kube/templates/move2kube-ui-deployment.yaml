@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    move2kube.konveyor.io/expose: "true"
+  labels:
+    move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
+  name: {{ .Release.Name }}-move2kubeui
+spec:
+  replicas:  {{ .Values.ui.replicas }}
+  selector:
+    matchLabels:
+      move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
+  template:
+    metadata:
+      annotations:
+        move2kube.konveyor.io/expose: "true"
+      labels:
+        move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
+      name: {{ .Release.Name }}-move2kubeui
+    spec:
+      serviceAccountName: {{ .Release.Name }}-move2kube
+      containers:
+        - image: quay.io/konveyor/move2kube-ui:{{ .Values.image_tag | default .Chart.AppVersion }}
+          {{- if .Values.auth }}
+          command: ["node", "server.js", "--auth", "secrets/auth.json"]
+          {{- else }}
+          command: ["node", "server.js"]
+          {{- end }}
+          imagePullPolicy: Always
+          name: move2kubeui
+          env:
+            - name: MOVE2KUBEAPI
+              value: http://{{ .Release.Name }}-move2kubeapi:8080
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          {{- if .Values.auth }}
+          volumeMounts:
+            - name: secrets-volume
+              mountPath: /app/secrets
+              readOnly: true
+            {{- if gt (.Values.ui.replicas | int) 1 }}
+            - name: common-volume
+              mountPath: /app/common
+            {{- end -}}
+          {{- end -}}
+      {{- if .Values.auth -}}
+      {{- if gt (.Values.ui.replicas | int) 1 }}
+      initContainers:
+        - name: initcontainer
+          image: quay.io/konveyor/busybox
+          command: ["/bin/sh", "-c"]
+          args:
+            - chmod -R a+rwx /app/common;
+          volumeMounts:
+          - name: common-volume
+            mountPath: /app/common
+      {{- end -}}
+      {{- end }}
+      restartPolicy: Always
+      {{- if .Values.auth }}
+      volumes:
+        - name: secrets-volume
+          secret:
+            secretName: {{ .Release.Name }}-move2kubeui
+        {{- if gt (.Values.ui.replicas | int) 1 }}
+        - name: common-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-move2kubeui
+        {{- end -}}
+      {{- end }}
