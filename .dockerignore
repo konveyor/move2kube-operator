@@ -16,4 +16,4 @@ Dockerfile
 deploy
 .git
 .gitignore
-
+secrets/

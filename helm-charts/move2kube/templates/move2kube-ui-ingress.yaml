@@ -1,23 +1,34 @@
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
 apiVersion: networking.k8s.io/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   labels:
     move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
   name: {{ .Release.Name }}-move2kubeui
 spec:
-  {{ if .Values.ingresstls }}
+  {{- if .Values.ingresstls }}
   tls:
     - hosts:
         - {{ .Release.Name }}-{{ .Release.Namespace }}.{{.Values.ingresshost}}
       secretName: {{ .Values.ingresstls }}
-  {{ end }}
+  {{- end }}
   rules:
     - host: {{ .Release.Name }}-{{ .Release.Namespace }}.{{.Values.ingresshost}}
       http:
         paths:
-          - backend:
+          - path: /
+            {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-move2kubeui
+                port:
+                  number: 8080
+            {{- else }}
+            backend:
               serviceName: {{ .Release.Name }}-move2kubeui
               servicePort: 8080
-            path: /
-status:
-  loadBalancer: {}
+            {{- end }}

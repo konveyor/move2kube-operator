@@ -5,7 +5,7 @@ metadata:
     move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
   name: {{ .Release.Name }}-move2kubeapi
 spec:
-  replicas: 2
+  replicas: {{ .Values.api.replicas }}
   selector:
     matchLabels:
       move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
@@ -24,29 +24,29 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
-          {{ if .Values.privileged }}
+          {{- if .Values.privileged }}
           securityContext:
             privileged: true
-          {{ end }}
+          {{- end }}
           resources: {}
           volumeMounts:
             - mountPath: /workspace
-              name: {{ .Release.Name }}-data-pvcclaim1
+              name: common-volume
             - mountPath: /var/lib/containers
               name: container-storage
       initContainers:
-        - name: initcontainer 
+        - name: initcontainer
           image: quay.io/konveyor/busybox
           command: ["/bin/sh", "-c"]
           args:
-            - chmod -R a+rwx -R /workspace; 
+            - chmod -R a+rwx /workspace;
           volumeMounts:
-          - name: {{ .Release.Name }}-data-pvcclaim1
+          - name: common-volume
             mountPath: /workspace
       restartPolicy: Always
       volumes:
-        - name: {{ .Release.Name }}-data-pvcclaim1
+        - name: common-volume
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-data-pvcclaim1
+            claimName: {{ .Release.Name }}-move2kubeapi
         - name: container-storage
           emptyDir: {}
