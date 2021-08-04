@@ -40,7 +40,8 @@ Operator to orchestrate [Move2Kube UI](https://github.com/konveyor/move2kube-ui)
    helm install --set ingresshost='my.k8s.cluster.domain.com' --set ingresstls='my-tls-secret' --set-file 'auth=path/to/my/file.json' my-move2kube move2kube/move2kube
    ```
    Replace `my-tls-secret` with the name of the K8s secret that contains the certificate and private key required for TLS.  
-   The schema for the JSON file containing authentication details can be found here: https://github.com/konveyor/move2kube-ui/blob/main/server.js#L202-L341
+   The schema for the JSON file containing authentication details can be found here: https://github.com/konveyor/move2kube-ui/blob/main/server.js#L202-L341  
+   Example: https://github.com/konveyor/move2kube-demos/blob/main/samples/auth/auth.json
 
 5. The helm chart will output the URL where you can access Move2Kube.  
    You can also do `kubectl get ingress` to get find the url and open it in the browser.  
