@@ -19,7 +19,11 @@ spec:
         move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
       name: {{ .Release.Name }}-move2kubeui
     spec:
+      {{- if .Values.useExistingServiceAccount }}
+      serviceAccountName: {{ .Values.useExistingServiceAccount }}
+      {{- else }}
       serviceAccountName: {{ .Release.Name }}-move2kube
+      {{- end }}
       containers:
         - image: quay.io/konveyor/move2kube-ui:{{ .Values.image_tag | default .Chart.AppVersion }}
           {{- if .Values.auth }}
@@ -67,6 +71,10 @@ spec:
         {{- if gt (.Values.ui.replicas | int) 1 }}
         - name: common-volume
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-move2kubeui
+            {{- if .Values.api.useExistingPVC }}
+            claimName: {{ .Values.api.useExistingPVC }}
+            {{- else }}
+            claimName: {{ .Release.Name }}-move2kubeapi
+            {{- end }}
         {{- end -}}
       {{- end }}

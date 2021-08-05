@@ -1,0 +1,18 @@
+{{- if .Values.useRoute }}
+{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1/Route" }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Release.Name }}-move2kubeui
+spec:
+  tls:
+    termination: edge
+  host: {{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.ingresshost }}
+  path: /
+  to:
+    kind: Service
+    name: {{ .Release.Name }}-move2kubeui
+  port:
+    targetPort: 8080
+{{- end }}
+{{- end }}

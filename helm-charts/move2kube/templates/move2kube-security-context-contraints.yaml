@@ -1,3 +1,4 @@
+{{- if .Values.enableSCC }}
 {{- if .Capabilities.APIVersions.Has "security.openshift.io/v1/SecurityContextConstraints" }}
 kind: SecurityContextConstraints
 apiVersion: security.openshift.io/v1
@@ -39,4 +40,5 @@ volumes:
   - secret
 allowedCapabilities: []
 defaultAddCapabilities: []
+{{- end }}
 {{- end }}

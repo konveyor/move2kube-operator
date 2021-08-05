@@ -4,7 +4,11 @@ storageclass: default
 storagesize: 1Gi
 privileged: false
 api:
-  replicas: 2
+  replicas: 1
+  useExistingPVC: ""
 ui:
   replicas: 1
 auth: ""
+enableSCC: true
+useRoute: false
+useExistingServiceAccount: ""
