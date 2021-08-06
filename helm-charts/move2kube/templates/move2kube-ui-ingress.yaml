@@ -1,3 +1,5 @@
+{{- if .Values.useRoute }}
+{{- else }}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
 apiVersion: networking.k8s.io/v1
 {{- else }}
@@ -12,11 +14,11 @@ spec:
   {{- if .Values.ingresstls }}
   tls:
     - hosts:
-        - {{ .Release.Name }}-{{ .Release.Namespace }}.{{.Values.ingresshost}}
+        - {{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.ingresshost }}
       secretName: {{ .Values.ingresstls }}
   {{- end }}
   rules:
-    - host: {{ .Release.Name }}-{{ .Release.Namespace }}.{{.Values.ingresshost}}
+    - host: {{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.ingresshost }}
       http:
         paths:
           - path: /
@@ -32,3 +34,4 @@ spec:
               serviceName: {{ .Release.Name }}-move2kubeui
               servicePort: 8080
             {{- end }}
+{{- end }}

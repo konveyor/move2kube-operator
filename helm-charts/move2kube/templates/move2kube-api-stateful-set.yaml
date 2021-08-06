@@ -16,7 +16,11 @@ spec:
         move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
       name: {{ .Release.Name }}-move2kubeapi
     spec:
+      {{- if .Values.useExistingServiceAccount }}
+      serviceAccountName: {{ .Values.useExistingServiceAccount }}
+      {{- else }}
       serviceAccountName: {{ .Release.Name }}-move2kube
+      {{- end }}
       containers:
         - image: quay.io/konveyor/move2kube-api:{{ .Values.image_tag | default .Chart.AppVersion }}
           imagePullPolicy: Always
@@ -47,6 +51,10 @@ spec:
       volumes:
         - name: common-volume
           persistentVolumeClaim:
+            {{- if .Values.api.useExistingPVC }}
+            claimName: {{ .Values.api.useExistingPVC }}
+            {{- else }}
             claimName: {{ .Release.Name }}-move2kubeapi
+            {{- end }}
         - name: container-storage
           emptyDir: {}
