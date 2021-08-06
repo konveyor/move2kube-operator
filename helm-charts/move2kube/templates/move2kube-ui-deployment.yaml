@@ -1,56 +1,50 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: "{{ .Release.Name }}-move2kubeui"
+  labels:
+    move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeui"
   annotations:
     move2kube.konveyor.io/expose: "true"
-  labels:
-    move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
-  name: {{ .Release.Name }}-move2kubeui
 spec:
-  replicas:  {{ .Values.ui.replicas }}
+  replicas: 1
   selector:
     matchLabels:
-      move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
+      move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeui"
   template:
     metadata:
+      name: "{{ .Release.Name }}-move2kubeui"
+      labels:
+        move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeui"
       annotations:
         move2kube.konveyor.io/expose: "true"
-      labels:
-        move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeui
-      name: {{ .Release.Name }}-move2kubeui
     spec:
-      {{- if .Values.useExistingServiceAccount }}
-      serviceAccountName: {{ .Values.useExistingServiceAccount }}
-      {{- else }}
-      serviceAccountName: {{ .Release.Name }}-move2kube
+      {{- if .Values.serviceAccount.enable }}
+      serviceAccountName: '{{ .Values.serviceAccount.name | default (print .Release.Name "-move2kube") }}'
       {{- end }}
       containers:
-        - image: quay.io/konveyor/move2kube-ui:{{ .Values.image_tag | default .Chart.AppVersion }}
-          {{- if .Values.auth }}
+        - name: move2kubeui
+          image: "quay.io/konveyor/move2kube-ui:{{ .Values.deployment.ui.imageTag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          {{- if .Values.secret.enable }}
           command: ["node", "server.js", "--auth", "secrets/auth.json"]
           {{- else }}
           command: ["node", "server.js"]
           {{- end }}
-          imagePullPolicy: Always
-          name: move2kubeui
           env:
             - name: MOVE2KUBEAPI
               value: http://{{ .Release.Name }}-move2kubeapi:8080
           ports:
             - containerPort: 8080
               protocol: TCP
-          {{- if .Values.auth }}
           volumeMounts:
+            - name: common-volume
+              mountPath: /app/common
+            {{- if .Values.secret.enable }}
             - name: secrets-volume
               mountPath: /app/secrets
               readOnly: true
-            {{- if gt (.Values.ui.replicas | int) 1 }}
-            - name: common-volume
-              mountPath: /app/common
-            {{- end -}}
-          {{- end -}}
-      {{- if .Values.auth -}}
-      {{- if gt (.Values.ui.replicas | int) 1 }}
+            {{- end }}
       initContainers:
         - name: initcontainer
           image: quay.io/konveyor/busybox
@@ -60,21 +54,12 @@ spec:
           volumeMounts:
           - name: common-volume
             mountPath: /app/common
-      {{- end -}}
-      {{- end }}
       restartPolicy: Always
-      {{- if .Values.auth }}
       volumes:
+        - name: common-volume
+          emptyDir: {}
+        {{- if .Values.secret.enable }}
         - name: secrets-volume
           secret:
-            secretName: {{ .Release.Name }}-move2kubeui
-        {{- if gt (.Values.ui.replicas | int) 1 }}
-        - name: common-volume
-          persistentVolumeClaim:
-            {{- if .Values.api.useExistingPVC }}
-            claimName: {{ .Values.api.useExistingPVC }}
-            {{- else }}
-            claimName: {{ .Release.Name }}-move2kubeapi
-            {{- end }}
-        {{- end -}}
-      {{- end }}
+            secretName: '{{ .Values.secret.name | default (print .Release.Name "-move2kubeui") }}'
+        {{- end }}

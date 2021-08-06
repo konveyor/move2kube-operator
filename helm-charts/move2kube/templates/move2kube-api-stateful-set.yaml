@@ -1,38 +1,35 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  name: "{{ .Release.Name }}-move2kubeapi"
   labels:
-    move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
-  name: {{ .Release.Name }}-move2kubeapi
+    move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeapi"
 spec:
-  replicas: {{ .Values.api.replicas }}
+  replicas: {{ .Values.deployment.api.replicas }}
   selector:
     matchLabels:
-      move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
-  serviceName: {{ .Release.Name }}-move2kubeapiheadless
+      move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeapi"
+  serviceName: "{{ .Release.Name }}-move2kubeapiheadless"
   template:
     metadata:
       labels:
-        move2kube.konveyor.io/service: {{ .Release.Name }}-move2kubeapi
-      name: {{ .Release.Name }}-move2kubeapi
+        move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeapi"
+      name: "{{ .Release.Name }}-move2kubeapi"
     spec:
-      {{- if .Values.useExistingServiceAccount }}
-      serviceAccountName: {{ .Values.useExistingServiceAccount }}
-      {{- else }}
-      serviceAccountName: {{ .Release.Name }}-move2kube
+      {{- if .Values.serviceAccount.enable }}
+      serviceAccountName: '{{ .Values.serviceAccount.name | default (print .Release.Name "-move2kube") }}'
       {{- end }}
       containers:
-        - image: quay.io/konveyor/move2kube-api:{{ .Values.image_tag | default .Chart.AppVersion }}
+        - name: move2kubeapi
+          image: "quay.io/konveyor/move2kube-api:{{ .Values.deployment.api.imageTag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
-          name: move2kubeapi
           ports:
             - containerPort: 8080
               protocol: TCP
-          {{- if .Values.privileged }}
+          {{- if .Values.deployment.api.privilegedPods }}
           securityContext:
             privileged: true
           {{- end }}
-          resources: {}
           volumeMounts:
             - mountPath: /workspace
               name: common-volume
@@ -50,11 +47,11 @@ spec:
       restartPolicy: Always
       volumes:
         - name: common-volume
+          {{- if .Values.persistentVolumeClaim.enable }}
           persistentVolumeClaim:
-            {{- if .Values.api.useExistingPVC }}
-            claimName: {{ .Values.api.useExistingPVC }}
-            {{- else }}
-            claimName: {{ .Release.Name }}-move2kubeapi
-            {{- end }}
+            claimName: '{{ .Values.persistentVolumeClaim.name | default (print .Release.Name "-move2kubeapi") }}'
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
         - name: container-storage
           emptyDir: {}

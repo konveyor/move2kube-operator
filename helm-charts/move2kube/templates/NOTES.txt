@@ -1,6 +1,11 @@
-Thank you for installing {{ .Chart.Name }}.
+Thank you for installing {{ .Chart.Name }}!
 
-Your release is named {{ .Release.Name }} and is accessible at {{ .Release.Name }}-{{ .Release.Namespace }}.{{.Values.ingresshost}}.
+Your release is named {{ .Release.Name }} and is accessible at:
+{{- if or (.Values.ingress.tlsSecret) (.Values.ingress.preferRoute) }}
+https://{{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.ingress.domainName }}
+{{- else }}
+http://{{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.ingress.domainName }}
+{{- end }}
 
 To learn more about the release, try:
 

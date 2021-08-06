@@ -1,18 +1,19 @@
-{{- if .Values.api.useExistingPVC }}
-{{- else }}
+{{- if and (.Values.persistentVolumeClaim.enable) (.Values.persistentVolumeClaim.createNew) }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-move2kubeapi
+  name: '{{ .Values.persistentVolumeClaim.name | default (print .Release.Name "-move2kubeapi") }}'
+  labels:
+    move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeapi"
 spec:
   accessModes:
-  {{- if gt (.Values.api.replicas | int) 1 }}
+  {{- if gt (.Values.deployment.api.replicas | int) 1 }}
     - ReadWriteMany
   {{- else }}
     - ReadWriteOnce
   {{- end }}
-  storageClassName: {{ .Values.storageclass }}
+  storageClassName: "{{ .Values.persistentVolumeClaim.storageClass }}"
   resources:
     requests:
-      storage: {{ .Values.storagesize }}
+      storage: "{{ .Values.persistentVolumeClaim.storageSize }}"
 {{- end }}
