@@ -1,92 +1,51 @@
 {
-    "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome5",
-    "definitions": {
-        "Welcome5": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "deployment": {
-                    "$ref": "#/definitions/Deployment"
-                },
-                "ingress": {
-                    "$ref": "#/definitions/Ingress"
-                },
-                "persistentVolumeClaim": {
-                    "$ref": "#/definitions/PersistentVolumeClaim"
-                },
-                "secret": {
-                    "$ref": "#/definitions/Secret"
-                },
-                "securityContextContraints": {
-                    "$ref": "#/definitions/SecurityContextContraints"
-                },
-                "serviceAccount": {
-                    "$ref": "#/definitions/Secret"
-                }
-            },
-            "required": [
-                "deployment",
-                "ingress",
-                "persistentVolumeClaim",
-                "secret",
-                "securityContextContraints",
-                "serviceAccount"
-            ],
-            "title": "Welcome5"
-        },
-        "Deployment": {
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "deployment": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "api": {
-                    "$ref": "#/definitions/API"
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "imageTag": {
+                            "type": "string"
+                        },
+                        "replicas": {
+                            "type": "integer"
+                        },
+                        "privilegedPods": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "imageTag",
+                        "privilegedPods",
+                        "replicas"
+                    ]
                 },
                 "ui": {
-                    "$ref": "#/definitions/UI"
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "imageTag": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "imageTag"
+                    ]
                 }
             },
             "required": [
                 "api",
                 "ui"
-            ],
-            "title": "Deployment"
+            ]
         },
-        "API": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "imageTag": {
-                    "type": "string"
-                },
-                "replicas": {
-                    "type": "integer"
-                },
-                "privilegedPods": {
-                    "type": "boolean"
-                }
-            },
-            "required": [
-                "imageTag",
-                "privilegedPods",
-                "replicas"
-            ],
-            "title": "API"
-        },
-        "UI": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "imageTag": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "imageTag"
-            ],
-            "title": "UI"
-        },
-        "Ingress": {
+        "ingress": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -108,10 +67,9 @@
                 "enable",
                 "preferRoute",
                 "tlsSecret"
-            ],
-            "title": "Ingress"
+            ]
         },
-        "PersistentVolumeClaim": {
+        "persistentVolumeClaim": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -137,10 +95,45 @@
                 "name",
                 "storageClass",
                 "storageSize"
-            ],
-            "title": "PersistentVolumeClaim"
+            ]
         },
-        "Secret": {
+        "secret": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                },
+                "createNew": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "auth": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "createNew",
+                "enable",
+                "name",
+                "auth"
+            ]
+        },
+        "securityContextContraints": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "enable"
+            ]
+        },
+        "serviceAccount": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -161,21 +154,15 @@
                 "createNew",
                 "enable",
                 "name"
-            ],
-            "title": "Secret"
-        },
-        "SecurityContextContraints": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "enable": {
-                    "type": "boolean"
-                }
-            },
-            "required": [
-                "enable"
-            ],
-            "title": "SecurityContextContraints"
+            ]
         }
-    }
+    },
+    "required": [
+        "deployment",
+        "ingress",
+        "persistentVolumeClaim",
+        "secret",
+        "securityContextContraints",
+        "serviceAccount"
+    ]
 }

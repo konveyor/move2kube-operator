@@ -31,13 +31,18 @@ Operator to orchestrate [Move2Kube UI](https://github.com/konveyor/move2kube-ui)
    ```
 4. To install without authentication run:
    ```
-   helm install --set ingresshost='my.k8s.cluster.domain.com' my-move2kube move2kube/move2kube
+   helm install --set ingress.domainName='my.k8s.cluster.domain.com' my-move2kube move2kube/move2kube
    ```
    Replace `my.k8s.cluster.domain.com` with the domain where you K8s cluster is deployed.  
 
    If you need authentication then put the required details in a JSON file and run:
    ```
-   helm install --set ingresshost='my.k8s.cluster.domain.com' --set ingresstls='my-tls-secret' --set-file 'auth=path/to/my/file.json' my-move2kube move2kube/move2kube
+   helm install \
+      --set ingress.domainName='my.k8s.cluster.domain.com' \
+      --set ingress.tlsSecret='my-tls-secret' \
+      --set secret.enable=true \
+      --set-file 'secret.auth=path/to/my/file.json' \
+      my-move2kube move2kube/move2kube
    ```
    Replace `my-tls-secret` with the name of the K8s secret that contains the certificate and private key required for TLS.  
    The schema for the JSON file containing authentication details can be found here: https://github.com/konveyor/move2kube-ui/blob/main/server.js#L202-L341  
