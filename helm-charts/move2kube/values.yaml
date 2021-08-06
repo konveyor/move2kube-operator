@@ -1,14 +1,29 @@
-ingresshost: my.domain.com
-ingresstls: ""
-storageclass: default
-storagesize: 1Gi
-privileged: false
-api:
-  replicas: 1
-  useExistingPVC: ""
-ui:
-  replicas: 1
-auth: ""
-enableSCC: true
-useRoute: false
-useExistingServiceAccount: ""
+deployment:
+  api:
+    imageTag: "" # if empty we will use AppVersion from the Chart.yaml as the tag
+    replicas: 2
+    privilegedPods: false # some optional features of move2kube require privileged pods
+  ui:
+    imageTag: "" # if empty we will use AppVersion from the Chart.yaml as the tag
+ingress:
+  enable: true
+  preferRoute: false # if true we will use an Openshift Route instead of an K8s Ingress
+  domainName: my.domain.com
+  tlsSecret: "" # not necessary when using Openshift Route
+persistentVolumeClaim:
+  enable: true # set this to true to get persistent storage
+  createNew: true
+  name: "" # if createNew is false this MUST contain the name of an existing persistent volume claim
+  storageClass: default
+  storageSize: 1Gi
+secret:
+  enable: false
+  createNew: true
+  name: "" # if createNew is false this MUST contain the name of an existing secret
+  auth: '{"is_auth_enabled": false}' # JSON containing authentication details. Example: https://github.com/konveyor/move2kube-demos/blob/main/samples/auth/auth.json
+securityContextContraints:
+  enable: true
+serviceAccount:
+  enable: true
+  createNew: true
+  name: "" # if createNew is false this MUST contain the name of an existing service account

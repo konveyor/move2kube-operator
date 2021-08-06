@@ -1,67 +1,181 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "title": "Values",
-    "properties": {
-        "ingresshost": {
-            "type": "string",
-            "description": "domain where the k8s cluster is deployed"
-        },
-        "ingresstls": {
-            "type": "string",
-            "description": "name of the K8s secret containing TLS certificate and private key"
-        },
-        "storageclass": {
-            "type": "string",
-            "description": "storage class to use for the PVCs"
-        },
-        "storagesize": {
-            "type": "string",
-            "description": "amount of storage to allocate in the PVCs"
-        },
-        "privileged": {
-            "type": "boolean",
-            "description": "this is only necessary to enable certain advanced features of move2kube"
-        },
-        "api": {
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome5",
+    "definitions": {
+        "Welcome5": {
             "type": "object",
-            "description": "settings specific to the API server",
+            "additionalProperties": false,
             "properties": {
-                "replicas": {
-                    "type": "integer",
-                    "description": "number of pods to start"
+                "deployment": {
+                    "$ref": "#/definitions/Deployment"
+                },
+                "ingress": {
+                    "$ref": "#/definitions/Ingress"
+                },
+                "persistentVolumeClaim": {
+                    "$ref": "#/definitions/PersistentVolumeClaim"
+                },
+                "secret": {
+                    "$ref": "#/definitions/Secret"
+                },
+                "securityContextContraints": {
+                    "$ref": "#/definitions/SecurityContextContraints"
+                },
+                "serviceAccount": {
+                    "$ref": "#/definitions/Secret"
                 }
             },
             "required": [
-                "replicas"
-            ]
+                "deployment",
+                "ingress",
+                "persistentVolumeClaim",
+                "secret",
+                "securityContextContraints",
+                "serviceAccount"
+            ],
+            "title": "Welcome5"
         },
-        "ui": {
+        "Deployment": {
             "type": "object",
-            "description": "settings specific to the UI server",
+            "additionalProperties": false,
             "properties": {
-                "replicas": {
-                    "type": "integer",
-                    "description": "number of pods to start"
+                "api": {
+                    "$ref": "#/definitions/API"
+                },
+                "ui": {
+                    "$ref": "#/definitions/UI"
                 }
             },
             "required": [
-                "replicas"
-            ]
+                "api",
+                "ui"
+            ],
+            "title": "Deployment"
         },
-        "auth": {
-            "type": "string",
-            "description": "a JSON containing all the authentication details"
+        "API": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "imageTag": {
+                    "type": "string"
+                },
+                "replicas": {
+                    "type": "integer"
+                },
+                "privilegedPods": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "imageTag",
+                "privilegedPods",
+                "replicas"
+            ],
+            "title": "API"
+        },
+        "UI": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "imageTag": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "imageTag"
+            ],
+            "title": "UI"
+        },
+        "Ingress": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                },
+                "preferRoute": {
+                    "type": "boolean"
+                },
+                "domainName": {
+                    "type": "string"
+                },
+                "tlsSecret": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "domainName",
+                "enable",
+                "preferRoute",
+                "tlsSecret"
+            ],
+            "title": "Ingress"
+        },
+        "PersistentVolumeClaim": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                },
+                "createNew": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "storageClass": {
+                    "type": "string"
+                },
+                "storageSize": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "createNew",
+                "enable",
+                "name",
+                "storageClass",
+                "storageSize"
+            ],
+            "title": "PersistentVolumeClaim"
+        },
+        "Secret": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                },
+                "createNew": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "auth": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "createNew",
+                "enable",
+                "name"
+            ],
+            "title": "Secret"
+        },
+        "SecurityContextContraints": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "enable"
+            ],
+            "title": "SecurityContextContraints"
         }
-    },
-    "required": [
-        "api",
-        "auth",
-        "ingresshost",
-        "ingresstls",
-        "privileged",
-        "storageclass",
-        "storagesize",
-        "ui"
-    ]
+    }
 }
