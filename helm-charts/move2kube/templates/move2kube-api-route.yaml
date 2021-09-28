@@ -2,17 +2,17 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: "{{ .Release.Name }}-move2kubeui"
+  name: "{{ .Release.Name }}-move2kubeapi"
   labels:
-    move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeui"
+    move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeapi"
 spec:
   tls:
     termination: edge
-  host: "{{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.ingress.domainName }}"
+  host: "{{ .Values.ingress.host }}"
   path: /
   to:
     kind: Service
-    name: "{{ .Release.Name }}-move2kubeui"
+    name: "{{ .Release.Name }}-move2kubeapi"
   port:
     targetPort: 8080
 {{- end }}

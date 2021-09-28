@@ -6,13 +6,10 @@ metadata:
   labels:
     move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeapi"
 spec:
+  storageClassName: "{{ .Values.persistentVolumeClaim.storageClassName }}"
   accessModes:
-  {{- if gt (.Values.deployment.api.replicas | int) 1 }}
     - ReadWriteMany
-  {{- else }}
-    - ReadWriteOnce
-  {{- end }}
-  storageClassName: "{{ .Values.persistentVolumeClaim.storageClass }}"
+  volumeMode: Filesystem
   resources:
     requests:
       storage: "{{ .Values.persistentVolumeClaim.storageSize }}"
