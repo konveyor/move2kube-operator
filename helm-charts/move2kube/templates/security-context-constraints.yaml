@@ -7,7 +7,7 @@ metadata:
     helm.sh/hook: pre-install
     helm.sh/hook-weight: "-1"
 users:
-  - "system:serviceaccount:{{ .Release.Namespace }}:{{ .Release.Name }}-move2kube"
+  - "system:serviceaccount:{{ .Release.Namespace }}:{{ .Values.serviceAccount.name | default (print .Release.Name "-move2kube") }}"
 fsGroup:
   type: RunAsAny
 priority: 100

@@ -6,18 +6,18 @@ apiVersion: networking.k8s.io/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: "{{ .Release.Name }}-move2kubeui"
+  name: "{{ .Release.Name }}-move2kubeapi"
   labels:
-    move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeui"
+    move2kube.konveyor.io/service: "{{ .Release.Name }}-move2kubeapi"
 spec:
-  {{- if .Values.ingress.tlsSecret }}
+  {{- if .Values.ingress.tlsSecretName }}
   tls:
     - hosts:
-        - "{{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.ingress.domainName }}"
-      secretName: "{{ .Values.ingress.tlsSecret }}"
+        - "{{ .Values.ingress.host }}"
+      secretName: "{{ .Values.ingress.tlsSecretName }}"
   {{- end }}
   rules:
-    - host: "{{ .Release.Name }}-{{ .Release.Namespace }}.{{ .Values.ingress.domainName }}"
+    - host: "{{ .Values.ingress.host }}"
       http:
         paths:
           - path: /
@@ -25,12 +25,12 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: "{{ .Release.Name }}-move2kubeui"
+                name: "{{ .Release.Name }}-move2kubeapi"
                 port:
                   number: 8080
             {{- else }}
             backend:
-              serviceName: "{{ .Release.Name }}-move2kubeui"
+              serviceName: "{{ .Release.Name }}-move2kubeapi"
               servicePort: 8080
             {{- end }}
 {{- end }}

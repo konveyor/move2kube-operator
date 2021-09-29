@@ -23,28 +23,33 @@ Move2Kube helps speed up the journey to Kubernetes.
    helm repo add move2kube https://move2kube.konveyor.io
    helm repo update
    ```
-4. To install without authentication run:
+4. To install without authentication and authorization run:
    ```
-   helm install --set ingress.domainName='my.k8s.cluster.domain.com' my-move2kube move2kube/move2kube
+   helm install --set ingress.host='my.k8s.cluster.domain.com' my-move2kube move2kube/move2kube
    ```
    Replace `my.k8s.cluster.domain.com` with the domain where you K8s cluster is deployed.  
 
-   If you need authentication then put the required details in a JSON file and run:
+   If you need authentication and authorization then put the required details in a JSON file and run:
    ```
    helm install \
-      --set ingress.domainName='my.k8s.cluster.domain.com' \
-      --set ingress.tlsSecret='my-tls-secret' \
-      --set secret.enable=true \
-      --set-file 'secret.auth=path/to/my/file.json' \
+      --set ingress.host='my.k8s.cluster.domain.com' \
+      --set ingress.tlsSecretName='my-tls-secret' \
+      --set deployment.authServer.enable=true \
+      --set deployment.database.enable=true \
+      --set secret.api.enable=true \
+      --set-file 'secret.api.configYAML=path/to/my/config.yaml' \
+      --set-file 'secret.authServer.realmJSON=path/to/my/realm.json' \
+      --set-file 'secret.authServer.standaloneHAXML=path/to/my/standalone-ha.xml' \
       my-move2kube move2kube/move2kube
    ```
    Replace `my-tls-secret` with the name of the K8s secret that contains the certificate and private key required for TLS.  
-   The schema for the JSON file containing authentication details can be found here: https://github.com/konveyor/move2kube-ui/blob/main/server.js#L202-L341  
-   Example: https://github.com/konveyor/move2kube-demos/blob/main/samples/auth/auth.json
+   Replace `path/to/my/config.yaml` with the path of a YAML file containing the config for the API server.  
+   Replace `path/to/my/realm.json` with the path of a JSON file containing the config for the Authorization server.  
+   Replace `path/to/my/standalone-ha.xml` with the path of an XML file containing the config for the Authorization server.  
 
 5. The helm chart will output the URL where you can access Move2Kube.  
-   You can also do `kubectl get ingress` to get find the url and open it in the browser.  
-   Example: `https://m2krelease-mynamespace.my.k8s.cluster.domain.com`
+   You can also do `kubectl get ingress` to get find the url.  
+   Example: `https://my.k8s.cluster.domain.com`
 
 ## Discussion
 

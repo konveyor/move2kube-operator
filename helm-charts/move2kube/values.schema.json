@@ -1,51 +1,119 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-        "deployment": {
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/ValuesYAML",
+    "definitions": {
+        "ValuesYAML": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "deployment": {
+                    "$ref": "#/definitions/Deployment"
+                },
+                "ingress": {
+                    "$ref": "#/definitions/Ingress"
+                },
+                "persistentVolumeClaim": {
+                    "$ref": "#/definitions/PersistentVolumeClaim"
+                },
+                "secret": {
+                    "$ref": "#/definitions/Secret"
+                },
+                "securityContextContraints": {
+                    "$ref": "#/definitions/SecurityContextContraints"
+                },
+                "serviceAccount": {
+                    "$ref": "#/definitions/ServiceAccount"
+                }
+            },
+            "required": [
+                "deployment",
+                "ingress",
+                "persistentVolumeClaim",
+                "secret",
+                "securityContextContraints",
+                "serviceAccount"
+            ],
+            "title": "ValuesYAML"
+        },
+        "Deployment": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "api": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                        "imageTag": {
-                            "type": "string"
-                        },
-                        "replicas": {
-                            "type": "integer"
-                        },
-                        "privilegedPods": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "imageTag",
-                        "privilegedPods",
-                        "replicas"
-                    ]
+                    "$ref": "#/definitions/API"
                 },
-                "ui": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                        "imageTag": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "imageTag"
-                    ]
+                "authServer": {
+                    "$ref": "#/definitions/AuthServer"
+                },
+                "database": {
+                    "$ref": "#/definitions/AuthServer"
                 }
             },
             "required": [
                 "api",
-                "ui"
-            ]
+                "authServer",
+                "database"
+            ],
+            "title": "Deployment"
         },
-        "ingress": {
+        "API": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "replicas": {
+                    "type": "integer"
+                },
+                "privilegedPods": {
+                    "type": "boolean"
+                },
+                "imageTag": {
+                    "type": "string"
+                },
+                "memory": {
+                    "type": "string"
+                },
+                "cpu": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "cpu",
+                "imageTag",
+                "memory",
+                "privilegedPods",
+                "replicas"
+            ],
+            "title": "API"
+        },
+        "AuthServer": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable": {
+                    "type": "boolean"
+                },
+                "replicas": {
+                    "type": "integer"
+                },
+                "memory": {
+                    "type": "string"
+                },
+                "cpu": {
+                    "type": "string"
+                },
+                "startEmpty": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "cpu",
+                "enable",
+                "memory",
+                "replicas"
+            ],
+            "title": "AuthServer"
+        },
+        "Ingress": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -55,21 +123,22 @@
                 "preferRoute": {
                     "type": "boolean"
                 },
-                "domainName": {
+                "host": {
                     "type": "string"
                 },
-                "tlsSecret": {
+                "tlsSecretName": {
                     "type": "string"
                 }
             },
             "required": [
-                "domainName",
                 "enable",
+                "host",
                 "preferRoute",
-                "tlsSecret"
-            ]
+                "tlsSecretName"
+            ],
+            "title": "Ingress"
         },
-        "persistentVolumeClaim": {
+        "PersistentVolumeClaim": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -82,7 +151,7 @@
                 "name": {
                     "type": "string"
                 },
-                "storageClass": {
+                "storageClassName": {
                     "type": "string"
                 },
                 "storageSize": {
@@ -93,11 +162,29 @@
                 "createNew",
                 "enable",
                 "name",
-                "storageClass",
+                "storageClassName",
                 "storageSize"
-            ]
+            ],
+            "title": "PersistentVolumeClaim"
         },
-        "secret": {
+        "Secret": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "api": {
+                    "$ref": "#/definitions/ServiceAccount"
+                },
+                "authServer": {
+                    "$ref": "#/definitions/SecretAuthServer"
+                }
+            },
+            "required": [
+                "api",
+                "authServer"
+            ],
+            "title": "Secret"
+        },
+        "ServiceAccount": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -110,18 +197,59 @@
                 "name": {
                     "type": "string"
                 },
-                "auth": {
+                "configYAML": {
                     "type": "string"
                 }
             },
             "required": [
                 "createNew",
                 "enable",
-                "name",
-                "auth"
-            ]
+                "name"
+            ],
+            "title": "ServiceAccount"
         },
-        "securityContextContraints": {
+        "SecretAuthServer": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "createNew": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "adminUsername": {
+                    "type": "string"
+                },
+                "adminPassword": {
+                    "type": "string"
+                },
+                "databaseUsername": {
+                    "type": "string"
+                },
+                "databasePassword": {
+                    "type": "string"
+                },
+                "realmJSON": {
+                    "type": "string"
+                },
+                "standaloneHAXML": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "adminPassword",
+                "adminUsername",
+                "createNew",
+                "databasePassword",
+                "databaseUsername",
+                "name",
+                "realmJSON",
+                "standaloneHAXML"
+            ],
+            "title": "SecretAuthServer"
+        },
+        "SecurityContextContraints": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -131,38 +259,8 @@
             },
             "required": [
                 "enable"
-            ]
-        },
-        "serviceAccount": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "enable": {
-                    "type": "boolean"
-                },
-                "createNew": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "auth": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "createNew",
-                "enable",
-                "name"
-            ]
+            ],
+            "title": "SecurityContextContraints"
         }
-    },
-    "required": [
-        "deployment",
-        "ingress",
-        "persistentVolumeClaim",
-        "secret",
-        "securityContextContraints",
-        "serviceAccount"
-    ]
+    }
 }
