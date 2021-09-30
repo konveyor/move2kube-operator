@@ -32,7 +32,17 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 # Image URL to use all building/pushing image targets
 IMG ?= ${REGISTRYNS}/move2kube-operator:$(VERSION)
 
-all: docker-build
+# Setting container tool
+DOCKER_CMD := $(shell command -v docker 2> /dev/null)
+PODMAN_CMD := $(shell command -v podman 2> /dev/null)
+
+ifdef DOCKER_CMD
+	CONTAINER_TOOL = 'docker'
+else ifdef PODMAN_CMD
+	CONTAINER_TOOL = 'podman'
+endif
+
+all: container-build
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
 run: helm-operator
@@ -56,12 +66,24 @@ undeploy: kustomize
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
 # Build the docker image
-docker-build:
-	docker build . -t ${IMG}
+container-build:
+ifndef CONTAINER_TOOL
+$(error No container tool (docker, podman) found in your environment. Please, install one)
+endif
+
+	@echo "Building image with $(CONTAINER_TOOL)"
+
+	${CONTAINER_TOOL} build . -t ${IMG}
 
 # Push the docker image
-docker-push:
-	docker push ${IMG}
+container-push:
+ifndef CONTAINER_TOOL
+$(error No container tool (docker, podman) found in your environment. Please, install one)
+endif
+
+	@echo "Pushing image with $(CONTAINER_TOOL)"
+	
+	${CONTAINER_TOOL} push ${IMG}
 
 PATH  := $(PATH):$(PWD)/bin
 SHELL := env PATH=$(PATH) /bin/sh
