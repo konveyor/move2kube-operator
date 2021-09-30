@@ -24,11 +24,11 @@ jobs:
       - run: echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
       - name: build container image
         run: |
-          VERSION='${{ steps.image_tag.outputs.tag }}' make docker-build
+          VERSION='${{ steps.image_tag.outputs.tag }}' make container-build
           VERSION='${{ steps.image_tag.outputs.tag }}' make bundle-build
       - name: push images to quay
         run: |
-          VERSION='${{ steps.image_tag.outputs.tag }}' make docker-push
+          VERSION='${{ steps.image_tag.outputs.tag }}' make container-push
           docker push quay.io/konveyor/move2kube-bundle:${{ steps.image_tag.outputs.tag }}
       - name: success slack notification
         uses: rtCamp/action-slack-notify@v2
