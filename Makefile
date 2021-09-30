@@ -68,7 +68,7 @@ undeploy: kustomize
 # Build the docker image
 container-build:
 ifndef CONTAINER_TOOL
-$(error No container tool (docker, podman) found in your environment. Please, install one)
+	$(error No container tool (docker, podman) found in your environment. Please, install one)
 endif
 
 	@echo "Building image with $(CONTAINER_TOOL)"
@@ -78,11 +78,11 @@ endif
 # Push the docker image
 container-push:
 ifndef CONTAINER_TOOL
-$(error No container tool (docker, podman) found in your environment. Please, install one)
+	$(error No container tool (docker, podman) found in your environment. Please, install one)
 endif
 
 	@echo "Pushing image with $(CONTAINER_TOOL)"
-	
+
 	${CONTAINER_TOOL} push ${IMG}
 
 PATH  := $(PATH):$(PWD)/bin
