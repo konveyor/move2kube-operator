@@ -1,4 +1,4 @@
-GIT_TAG    = $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
+GIT_TAG    = $(shell git push --set-upstream origin fix/maketag)
 GIT_BRANCH = $(shell git branch --show-current)
 
 IMAGE_TAG ?= ${GIT_TAG}
