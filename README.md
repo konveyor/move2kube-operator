@@ -16,9 +16,19 @@ Operator to orchestrate [Move2Kube UI](https://github.com/konveyor/move2kube-ui)
 
 ## Usage
 
-### Helm chart
+> A new Golang based operator is in the works
 
-See the instructions given in https://github.com/konveyor/move2kube-operator/blob/main/helm-charts/move2kube/README.md
+The instructions below are for installing the current Helm based operator:
+
+1. Deploy the operator either using the OLM tool or directly:  
+    https://sdk.operatorframework.io/docs/building-operators/helm/quickstart/#olm-deployment  
+    https://sdk.operatorframework.io/docs/building-operators/helm/quickstart/#direct-deployment
+
+1. Then we can apply the CR. Make sure to edit the CR yaml with the proper values before applying.
+    ```console
+    $ kubectl apply -f config/samples/demo_v1alpha1_nginx.yaml
+    ```
+    For more details check https://github.com/konveyor/move2kube-ui/blob/main/helm-charts/move2kube/README.md
 
 ## Discussion
 

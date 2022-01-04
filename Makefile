@@ -131,12 +131,6 @@ bundle: kustomize
 bundle-build: 
 	docker build -f bundle.Dockerfile -t $(BUNDLE_IMG) .
 
-.PHONY: prepare-for-release
-prepare-for-release:
-	mv helm-charts/move2kube/Chart.yaml old
-	cat old | sed -E s/version:\ v0.1.0-unreleased/version:\ ${IMAGE_TAG}/ | sed -E s/appVersion:\ latest/appVersion:\ ${IMAGE_TAG}/ > helm-charts/move2kube/Chart.yaml
-	rm old
-
 .PHONY: helm-install
 helm-install:
 	helm upgrade --install --set image_tag=${IMAGE_TAG} ${RELEASE_NAME} helm-charts/move2kube/
