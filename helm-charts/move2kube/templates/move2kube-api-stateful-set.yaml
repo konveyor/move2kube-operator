@@ -21,31 +21,45 @@ spec:
           image: quay.io/konveyor/busybox
           command: ["/bin/sh", "-c"]
           args:
-            - chown -R 12345:root /move2kube-api/data && chmod -R 770 /move2kube-api/data
+            - 'chown -R "$(id -u)":root /move2kube-api/data && chmod -R 770 /move2kube-api/data'
           volumeMounts:
             - name: common-volume
               mountPath: /move2kube-api/data
               subPath: move2kube-api/data
       containers:
-        - image: "quay.io/konveyor/move2kube-ui:{{ .Values.deployment.api.imageTag | default .Chart.AppVersion }}"
+        - name: move2kubeapi
+          image: "quay.io/konveyor/move2kube-ui:{{ .Values.deployment.api.imageTag | default .Chart.AppVersion }}"
           command:
             - move2kube-api
           args:
-            - --config=config.yaml
+            - '--log-level=trace'
+            - '--static-files-dir=build'
+            {{- if .Values.secret.api.enable }}
+            - '--config=config.yaml'
+            {{- end }}
+            - '--host=$(MY_POD).$(MY_SERVICE)'
           imagePullPolicy: Always
-          name: move2kubeapi
           ports:
             - containerPort: 8080
               protocol: TCP
+          env:
+            - name: MY_POD
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_SERVICE
+              value: "{{ .Release.Name }}-move2kubeapiheadless"
           {{- if .Values.deployment.api.privilegedPods }}
           securityContext:
             privileged: true
           {{- end }}
           volumeMounts:
+            {{- if .Values.secret.api.enable }}
             - name: api-config
               mountPath: /move2kube-api/config.yaml
               subPath: config.yaml
               readOnly: true
+            {{- end }}
             - name: common-volume
               mountPath: /move2kube-api/data
               subPath: move2kube-api/data
