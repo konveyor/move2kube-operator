@@ -106,11 +106,13 @@ jobs:
           ref: ${{ github.event.inputs.commit_ref }}
       - name: build
         run: |
-          VERSION=${{ github.event.inputs.tag }} make container-build
+          VERSION=${{ github.event.inputs.tag }} make docker-build
           VERSION=${{ github.event.inputs.tag }} make bundle-build
       - run: echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
       - name: push the image to quay
-        run: VERSION='${{ github.event.inputs.tag }}' make container-push
+        run: |
+          VERSION='${{ github.event.inputs.tag }}' make docker-push
+          VERSION='${{ github.event.inputs.tag  }}' make bundle-push
       - name: success slack notification
         uses: rtCamp/action-slack-notify@v2
         env:
