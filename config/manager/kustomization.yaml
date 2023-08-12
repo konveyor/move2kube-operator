@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: quay.io/konveyor/move2kube-operator
-  newTag: latest
+  newTag: v0.3.8

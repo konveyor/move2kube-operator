@@ -29,10 +29,10 @@ rules:
   - create
 
 ##
-## Rules for konveyor.io/v1alpha1, Kind: Move2Kube
+## Rules for move2kube.konveyor.io/v1alpha1, Kind: Move2Kube
 ##
 - apiGroups:
-  - konveyor.io
+  - move2kube.konveyor.io
   resources:
   - move2kubes
   - move2kubes/status
@@ -59,6 +59,7 @@ rules:
   - "persistentvolumeclaims"
   - "serviceaccounts"
   - "services"
+  - "configmaps"
 - verbs:
   - "*"
   apiGroups:
@@ -66,5 +67,17 @@ rules:
   resources:
   - "deployments"
   - "statefulsets"
+- verbs:
+  - "*"
+  apiGroups:
+  - "route.openshift.io"
+  resources:
+  - "routes"
+- verbs:
+  - "*"
+  apiGroups:
+  - "security.openshift.io"
+  resources:
+  - "securitycontextconstraints"
 
-# +kubebuilder:scaffold:rules
+#+kubebuilder:scaffold:rules

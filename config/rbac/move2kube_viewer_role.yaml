@@ -2,10 +2,17 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: move2kube-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: move2kube-operator
+    app.kubernetes.io/part-of: move2kube-operator
+    app.kubernetes.io/managed-by: kustomize
   name: move2kube-viewer-role
 rules:
 - apiGroups:
-  - konveyor.io
+  - move2kube.konveyor.io
   resources:
   - move2kubes
   verbs:
@@ -13,7 +20,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - konveyor.io
+  - move2kube.konveyor.io
   resources:
   - move2kubes/status
   verbs:
