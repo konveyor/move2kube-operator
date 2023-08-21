@@ -17,9 +17,9 @@ jobs:
         run: |
           BRANCH="${GITHUB_REF#refs/heads/}"
           if [ "$BRANCH" == 'main' ] ; then
-            echo "::set-output name=tag::latest"
+            echo "tag=latest" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=tag::$BRANCH"
+            echo "tag=$BRANCH" >> $GITHUB_OUTPUT
           fi
       - run: echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
       - name: build container image
