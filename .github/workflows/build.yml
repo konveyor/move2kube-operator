@@ -25,6 +25,8 @@ jobs:
       - name: build container image
         run: |
           VERSION='${{ steps.image_tag.outputs.tag }}' make docker-build
+          rm -rf bundle/
+          VERSION='${{ steps.image_tag.outputs.tag }}' make bundle
           VERSION='${{ steps.image_tag.outputs.tag }}' make bundle-build
       - name: push images to quay
         run: |
