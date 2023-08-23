@@ -5,7 +5,7 @@ metadata:
     alm-examples: '[]'
     capabilities: Seamless Upgrades
     categories: Modernization & Migration
-    containerImage: quay.io/konveyor/move2kube-operator:v0.3.8
+    containerImage: quay.io/konveyor/move2kube-operator:v0.3.9
     description: Konveyor Move2Kube is an open source tool that helps migrate your
       app to run on Kubernetes/Openshift.
     repository: https://github.com/konveyor/move2kube-operator
