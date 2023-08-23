@@ -107,6 +107,8 @@ jobs:
       - name: build
         run: |
           VERSION=${{ github.event.inputs.tag }} make docker-build
+          rm -rf bundle/
+          VERSION=${{ github.event.inputs.tag }} make bundle
           VERSION=${{ github.event.inputs.tag }} make bundle-build
       - run: echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
       - name: push the image to quay

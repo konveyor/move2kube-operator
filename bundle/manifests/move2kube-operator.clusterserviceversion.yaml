@@ -80,14 +80,14 @@ metadata:
     capabilities: Seamless Upgrades
     categories: Modernization & Migration
     containerImage: quay.io/konveyor/move2kube-operator:v0.3.8
-    createdAt: "2023-08-11T23:04:49Z"
+    createdAt: "2023-08-23T15:17:19Z"
     description: Konveyor Move2Kube is an open source tool that helps migrate your
       app to run on Kubernetes/Openshift.
     operators.operatorframework.io/builder: operator-sdk-v1.31.0
     operators.operatorframework.io/project_layout: helm.sdk.operatorframework.io/v1
     repository: https://github.com/konveyor/move2kube-operator
     support: https://github.com/konveyor/move2kube-operator/issues
-  name: move2kube-operator.v0.3.8
+  name: move2kube-operator.v0.3.9
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -277,7 +277,7 @@ spec:
                 - --metrics-bind-address=127.0.0.1:8080
                 - --leader-elect
                 - --leader-election-id=move2kube-operator
-                image: quay.io/konveyor/move2kube-operator:v0.3.8
+                image: quay.io/konveyor/move2kube-operator:v0.3.9
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -372,4 +372,4 @@ spec:
   provider:
     name: Konveyor
     url: https://konveyor.io
-  version: 0.3.8
+  version: 0.3.9
