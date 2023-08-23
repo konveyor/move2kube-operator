@@ -79,8 +79,8 @@ metadata:
       ]
     capabilities: Seamless Upgrades
     categories: Modernization & Migration
-    containerImage: quay.io/konveyor/move2kube-operator:v0.3.8
-    createdAt: "2023-08-23T15:17:19Z"
+    containerImage: quay.io/konveyor/move2kube-operator:v0.3.9
+    createdAt: "2023-08-23T19:28:57Z"
     description: Konveyor Move2Kube is an open source tool that helps migrate your
       app to run on Kubernetes/Openshift.
     operators.operatorframework.io/builder: operator-sdk-v1.31.0
