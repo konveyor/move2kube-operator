@@ -3,7 +3,13 @@
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
 # - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
-VERSION ?= 0.3.8
+
+VERSION ?= v0.3.8
+VERSION_WITHOUT_V := $(VERSION:v%=%)
+
+info:
+	@echo VERSION $(VERSION)
+	@echo VERSION_WITHOUT_V $(VERSION_WITHOUT_V)
 
 # CHANNELS define the bundle channels used in the bundle.
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "candidate,fast,stable")
@@ -33,10 +39,10 @@ IMAGE_TAG_BASE ?= quay.io/konveyor/move2kube
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
-BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(VERSION)
+BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(VERSION_WITHOUT_V)
 
 # BUNDLE_GEN_FLAGS are the flags passed to the operator-sdk generate bundle command
-BUNDLE_GEN_FLAGS ?= -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
+BUNDLE_GEN_FLAGS ?= -q --overwrite --version $(VERSION_WITHOUT_V) $(BUNDLE_METADATA_OPTS)
 
 # USE_IMAGE_DIGESTS defines if images are resolved via tags or digests
 # You can enable this value if you would like to use SHA Based Digests
@@ -51,7 +57,7 @@ endif
 OPERATOR_SDK_VERSION ?= v1.31.0
 
 # Image URL to use all building/pushing image targets
-IMG ?= $(IMAGE_TAG_BASE)-operator:v$(VERSION)
+IMG ?= $(IMAGE_TAG_BASE)-operator:v$(VERSION_WITHOUT_V)
 
 .PHONY: all
 all: docker-build
@@ -210,7 +216,7 @@ endif
 BUNDLE_IMGS ?= $(BUNDLE_IMG)
 
 # The image tag given to the resulting catalog image (e.g. make catalog-build CATALOG_IMG=example.com/operator-catalog:v0.2.0).
-CATALOG_IMG ?= $(IMAGE_TAG_BASE)-catalog:v$(VERSION)
+CATALOG_IMG ?= $(IMAGE_TAG_BASE)-catalog:v$(VERSION_WITHOUT_V)
 
 # Set CATALOG_BASE_IMG to an existing catalog image tag to add $BUNDLE_IMGS to that image.
 ifneq ($(origin CATALOG_BASE_IMG), undefined)
