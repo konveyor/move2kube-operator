@@ -104,9 +104,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.inputs.commit_ref }}
+      - name: install-yq
+        run: |
+          echo "installing yq..."
+          curl -L https://github.com/mikefarah/yq/releases/download/v4.13.5/yq_linux_amd64 -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
+          echo "yq installed"
       - name: build
         run: |
           VERSION=${{ github.event.inputs.tag }} make docker-build
+          rm -rf bundle/
+          VERSION=${{ github.event.inputs.tag }} make bundle
           VERSION=${{ github.event.inputs.tag }} make bundle-build
       - run: echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
       - name: push the image to quay
