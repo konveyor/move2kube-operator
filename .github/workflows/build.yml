@@ -12,7 +12,20 @@ jobs:
     name: Image build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      # copy the helm chart from the UI repo
+      - name: checkout-the-ui-repo
+        uses: actions/checkout@v2
+        with:
+          repository: 'konveyor/move2kube-ui'
+      - name: copy-helm-chart-into-tmp
+        run: cp -r helm-charts/ /tmp/helm-charts-move2kube
+      - name: cleanup
+        run: rm -rf {*,.*} || true
+      - name: checkout-the-current-repo
+        uses: actions/checkout@v2
+      - name: copy-helm-chart-into-pwd
+        run: rm -rf helm-charts/ && cp -r /tmp/helm-charts-move2kube helm-charts
+      # build the operator container image
       - id: image_tag
         run: |
           BRANCH="${GITHUB_REF#refs/heads/}"
