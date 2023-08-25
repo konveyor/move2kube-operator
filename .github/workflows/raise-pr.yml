@@ -1,0 +1,54 @@
+name: Raise PR to Operator Hub community and prod repos
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "current tag: The tag for this release"
+        required: true
+        default: v0.1.0-rc.2
+      prev_tag:
+        description: "previous tag: Tag from which to start calculating the changelog"
+        required: true
+        default: v0.1.0-beta.0
+      commit_ref:
+        description: "commit ref: The branch or tag of the commit to use for the release. The same tag needs to exist in the UI repo for copying the Helm chart."
+        required: false
+        default: main
+
+jobs:
+  commit_and_raise_pr:
+    name: Make a commit with the new changes and raise 2 PRs
+    runs-on: ubuntu-latest
+    steps:
+      # copy the bundle from the current repo
+      - name: checkout-the-current-repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.commit_ref }}
+      - name: copy-bundle-into-tmp
+        run: |
+          cp -r bundle/ /tmp/bundle-operator-move2kube
+          cp bundle.Dockerfile /tmp/bundle.Dockerfile
+      - name: cleanup
+        run: rm -rf {*,.*} || true
+      - name: checkout-the-move2kube-fork-of-upstream-repo
+        uses: actions/checkout@v2
+        with:
+          repository: 'move2kube/community-operators'
+          # TODO: should we only support main branch? release-0.x branches may not exist. Might require separate channels
+          ref: ${{ github.event.inputs.commit_ref }}
+      - name: copy-bundle-into-fork-creating-new-version-dir
+        run: |
+          cd operators/move2kube-operator/ || exit 1
+          cp -r /tmp/bundle-operator-move2kube '${{ github.event.inputs.tag }}' && cp /tmp/bundle.Dockerfile '${{ github.event.inputs.tag }}/bundle.Dockerfile'
+      - name: make a commit
+          # TODO: same as above, expecting commit_ref to be main branch
+        run: |
+          # login to the repo
+          git add --all
+          git commit -s -m "operator move2kube-operator (${{ github.event.inputs.tag }})"
+          git push --set-upstream origin ${{ github.event.inputs.commit_ref }}
+      - name: create-pull-request
+        run: |
+          curl "https://api.github.com/repos/k8s-operatorhub/community-operators/pulls" --user "${GITHUB_USER}:${GITHUB_TOKEN}" -X POST --data '{"title": "'"$(git log -1 --format=%s)"'", "base": "main", "body": "An automated PR to update konveyor-operator to v'"${OPERATOR_VERSION}"'", "head": "'"${GITHUB_USER}:${OPERATOR_VERSION}"'"}'
