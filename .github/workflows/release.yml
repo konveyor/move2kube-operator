@@ -12,7 +12,7 @@ on:
         required: true
         default: v0.1.0-beta.0
       commit_ref:
-        description: "commit ref: The branch, tag or SHA of the commit to use for the release."
+        description: "commit ref: The branch or tag of the commit to use for the release. The same tag needs to exist in the UI repo for copying the Helm chart."
         required: false
         default: main
 
@@ -101,9 +101,23 @@ jobs:
     name: Image build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      # copy the helm chart from the UI repo
+      - name: checkout-the-ui-repo
+        uses: actions/checkout@v2
+        with:
+          repository: 'konveyor/move2kube-ui'
+          ref: ${{ github.event.inputs.commit_ref }}
+      - name: copy-helm-chart-into-tmp
+        run: cp -r helm-charts/ /tmp/helm-charts-move2kube
+      - name: cleanup
+        run: rm -rf {*,.*} || true
+      - name: checkout-the-current-repo
+        uses: actions/checkout@v2
         with:
           ref: ${{ github.event.inputs.commit_ref }}
+      - name: copy-helm-chart-into-pwd
+        run: rm -rf helm-charts/ && cp -r /tmp/helm-charts-move2kube helm-charts
+      # build the bundle and container images
       - name: install-yq
         run: |
           echo "installing yq..."
@@ -111,8 +125,8 @@ jobs:
           echo "yq installed"
       - name: build
         run: |
-          VERSION=${{ github.event.inputs.tag }} make docker-build
           rm -rf bundle/
+          VERSION=${{ github.event.inputs.tag }} make docker-build
           VERSION=${{ github.event.inputs.tag }} make bundle
           VERSION=${{ github.event.inputs.tag }} make bundle-build
       - run: echo "${{ secrets.QUAY_BOT_PASSWORD }}" | docker login --username "${{ secrets.QUAY_BOT_USERNAME }}" --password-stdin quay.io
