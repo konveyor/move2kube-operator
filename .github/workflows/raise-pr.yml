@@ -36,12 +36,16 @@ jobs:
           git checkout main
           git config user.name move2kube
           git config user.email move2kube@gmail.com
+          echo 'sync our fork with upstream'
+          git remote add upstream https://github.com/k8s-operatorhub/community-operators
+          git fetch --all
+          git rebase upstream/main
           echo 'copy-bundle-into-fork-creating-new-version-dir'
           cd operators/move2kube-operator/ || exit 1
           VERSION='${{ github.event.inputs.tag }}'
           VERSION_WITHOUT_V="${VERSION#v}"
           cp -r /tmp/bundle-operator-move2kube "${VERSION_WITHOUT_V}" && cp /tmp/bundle.Dockerfile "${VERSION_WITHOUT_V}"/bundle.Dockerfile
-          echo 'make a commit'
+          echo 'make a commit and push to our fork'
           git add -A
           git commit -s -m 'operator move2kube-operator (${{ github.event.inputs.tag }})'
           git push -u origin main
@@ -56,12 +60,16 @@ jobs:
           git checkout main
           git config user.name move2kube
           git config user.email move2kube@gmail.com
+          echo 'sync our fork with upstream'
+          git remote add upstream https://github.com/redhat-openshift-ecosystem/community-operators-prod
+          git fetch --all
+          git rebase upstream/main
           echo 'copy-bundle-into-fork-of-prod-repo-creating-new-version-dir'
           cd operators/move2kube-operator/ || exit 1
           VERSION='${{ github.event.inputs.tag }}'
           VERSION_WITHOUT_V="${VERSION#v}"
           cp -r /tmp/bundle-operator-move2kube "${VERSION_WITHOUT_V}" && cp /tmp/bundle.Dockerfile "${VERSION_WITHOUT_V}"/bundle.Dockerfile
-          echo 'make a commit'
+          echo 'make a commit and push to our fork'
           git add -A
           git commit -s -m 'operator move2kube-operator (${{ github.event.inputs.tag }})'
           git push -u origin main
