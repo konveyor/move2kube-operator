@@ -29,6 +29,7 @@ jobs:
       - name: cleanup
         run: rm -rf {*,.*} || true
       - name: checkout-the-move2kube-fork-of-upstream-repo
+        shell: bash
         run: |
           git clone 'https://move2kube:${{ secrets.MOVE2KUBE_PATOKEN }}@github.com/move2kube/community-operators'
           cd community-operators/ || exit 1
@@ -37,7 +38,29 @@ jobs:
           git config user.email move2kube@gmail.com
           echo 'copy-bundle-into-fork-creating-new-version-dir'
           cd operators/move2kube-operator/ || exit 1
-          cp -r /tmp/bundle-operator-move2kube '${{ github.event.inputs.tag }}' && cp /tmp/bundle.Dockerfile '${{ github.event.inputs.tag }}/bundle.Dockerfile'
+          VERSION='${{ github.event.inputs.tag }}'
+          VERSION_WITHOUT_V="${VERSION#v}"
+          cp -r /tmp/bundle-operator-move2kube "${VERSION_WITHOUT_V}" && cp /tmp/bundle.Dockerfile "${VERSION_WITHOUT_V}"/bundle.Dockerfile
+          echo 'make a commit'
+          git add -A
+          git commit -s -m 'operator move2kube-operator (${{ github.event.inputs.tag }})'
+          git push -u origin main
+      # - name: create-pull-request
+      #   run: |
+      #     curl "https://api.github.com/repos/k8s-operatorhub/community-operators/pulls" --user "${GITHUB_USER}:${GITHUB_TOKEN}" -X POST --data '{"title": "'"$(git log -1 --format=%s)"'", "base": "main", "body": "An automated PR to update konveyor-operator to v'"${OPERATOR_VERSION}"'", "head": "'"${GITHUB_USER}:${OPERATOR_VERSION}"'"}'
+      - name: checkout-the-move2kube-fork-of-the-prod-upstream-repo
+        shell: bash
+        run: |
+          git clone 'https://move2kube:${{ secrets.MOVE2KUBE_PATOKEN }}@github.com/move2kube/community-operators-prod'
+          cd community-operators-prod/ || exit 1
+          git checkout main
+          git config user.name move2kube
+          git config user.email move2kube@gmail.com
+          echo 'copy-bundle-into-fork-of-prod-repo-creating-new-version-dir'
+          cd operators/move2kube-operator/ || exit 1
+          VERSION='${{ github.event.inputs.tag }}'
+          VERSION_WITHOUT_V="${VERSION#v}"
+          cp -r /tmp/bundle-operator-move2kube "${VERSION_WITHOUT_V}" && cp /tmp/bundle.Dockerfile "${VERSION_WITHOUT_V}"/bundle.Dockerfile
           echo 'make a commit'
           git add -A
           git commit -s -m 'operator move2kube-operator (${{ github.event.inputs.tag }})'
