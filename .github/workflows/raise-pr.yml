@@ -31,6 +31,7 @@ jobs:
       - name: checkout-the-move2kube-fork-of-upstream-repo
         run: |
           git clone 'https://move2kube:${{ secrets.MOVE2KUBE_PATOKEN }}@github.com/move2kube/community-operators'
+          cd community-operators/
           git checkout main
           git config user.name move2kube
           git config user.email move2kube@gmail.com
