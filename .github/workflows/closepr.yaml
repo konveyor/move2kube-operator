@@ -13,10 +13,10 @@ on:
 
 jobs:
   close_pr:
-    name: Make a commit with the new changes and raise 2 PRs
+    name: Close an existing PR created by the bot account
     runs-on: ubuntu-latest
     steps:
-      - name: create-pull-request-to-community-repo
+      - name: close-a-pull-request
         run: |
           curl -L \
             -X PATCH \
